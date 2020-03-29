@@ -1,5 +1,5 @@
-const CronJob = require('cron').CronJob;
-const https = require('https');
+import { CronJob } from 'cron';
+import * as https from 'https';
 
 const job = new CronJob(
     '* * * * * *',

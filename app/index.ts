@@ -38,7 +38,10 @@ function fetchResults(): Promise<string> {
 
 function parseMoney(root: any): number {
     const moneySpan = root.querySelector('span');
-    let moneyText = moneySpan.rawText;
+    let moneyText = moneySpan?.rawText;
+    if (!moneyText || moneyText === '') {
+        throw new Error('Money not found!');
+    }
     const estText = ' est';
     if (moneyText.endsWith(estText)) {
         moneyText = moneyText.substring(0, moneyText.length - estText.length);
@@ -52,7 +55,10 @@ function parseMoney(root: any): number {
 
 function parseDrawDate(root: any): Date {
     const dateDiv = root.querySelector('.toto-draw-date');
-    let dateText = dateDiv.rawText;
+    let dateText = dateDiv?.rawText;
+    if (!dateText || dateText === '') {
+        throw new Error('Draw date not found');
+    }
     const splited = dateText.split(', ');
     splited.push('+08');
     dateText = splited.slice(1, splited.length).join(',');

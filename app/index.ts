@@ -118,12 +118,11 @@ function performTask() {
         .catch(error => console.error(error));
 }
 
-const job = new CronJob(
-    `00 ${constants.runMinute} ${constants.runHour} * * *`,
-    performTask,
-    null,
-    false,
-    'Asia/Singapore'
-);
+const cronTime = `00 ${constants.runMinute} ${constants.runHour} * * *`;
+
+const job = new CronJob(cronTime, performTask, null, false, 'Asia/Singapore');
+
+console.log(`Running cron job with value: ${cronTime}`);
+console.log(`Push notification when money >= ${constants.minMoney}`);
 
 job.start();

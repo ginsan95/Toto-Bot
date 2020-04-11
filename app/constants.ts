@@ -6,6 +6,7 @@ let constants = {
     privateKey: process.env.PRIVATE_KEY ?? key.private_key,
     runHour: process.env.RUN_HOUR ?? 18,
     runMinute: process.env.RUN_MINUTE ?? 30,
+    port: process.env.PORT ?? 3000,
 };
 
 export default constants;

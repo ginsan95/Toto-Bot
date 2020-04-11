@@ -132,6 +132,6 @@ console.log(constants);
 createServer({}, (req, res) => {
     res.writeHead(200);
     res.end('Toto Bot');
-}).listen(8000);
+}).listen(constants.port);
 
 job.start();

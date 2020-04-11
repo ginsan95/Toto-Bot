@@ -125,4 +125,7 @@ const job = new CronJob(cronTime, performTask, null, false, 'Asia/Singapore');
 console.log(`Running cron job with value: ${cronTime}`);
 console.log(`Push notification when money >= ${constants.minMoney}`);
 
+console.log('Constant values are');
+console.log(constants);
+
 job.start();

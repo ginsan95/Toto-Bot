@@ -2,20 +2,8 @@ import { CronJob } from 'cron';
 import { parse as htmlParse } from 'node-html-parser';
 import { parse as dateParse, format as dateFormat } from 'date-fns';
 import { JWT } from 'google-auth-library';
-import key from '../keys/service-account.json';
 import * as api from './api';
-
-// const job = new CronJob(
-//     '* * * * * *',
-//     function() {
-//         console.log('You will see this message every second');
-//     },
-//     null,
-//     true,
-//     'America/Los_Angeles'
-// );
-//
-// job.start();
+import constants from './constants';
 
 interface TotoInfo {
     money: number;
@@ -23,9 +11,9 @@ interface TotoInfo {
 }
 
 const jwt = new JWT(
-    key.client_email,
+    constants.email,
     undefined,
-    key.private_key,
+    constants.privateKey,
     'https://www.googleapis.com/auth/firebase.messaging',
     undefined
 );
@@ -73,7 +61,13 @@ function parseTotoInfo(html: string): TotoInfo {
 }
 
 function handleTotoInfo(info: TotoInfo) {
-    return fetchGoogleToken().then(token => sendNotification(info, token));
+    if (info.money >= constants.minMoney) {
+        return fetchGoogleToken().then(token => sendNotification(info, token));
+    } else {
+        console.log('Not sending notifications');
+        console.log(`Min money amount is ${constants.minMoney}`);
+        console.log(`Toto prize money is ${info.money}`);
+    }
 }
 
 function fetchGoogleToken(): Promise<string> {
@@ -117,7 +111,19 @@ function sendNotification(info: TotoInfo, token: string) {
         .then(value => console.log(value));
 }
 
-fetchResults()
-    .then(parseTotoInfo)
-    .then(handleTotoInfo)
-    .catch(error => console.error(error));
+function performTask() {
+    fetchResults()
+        .then(parseTotoInfo)
+        .then(handleTotoInfo)
+        .catch(error => console.error(error));
+}
+
+const job = new CronJob(
+    `00 ${constants.runMinute} ${constants.runHour} * * *`,
+    performTask,
+    null,
+    false,
+    'Asia/Singapore'
+);
+
+job.start();
